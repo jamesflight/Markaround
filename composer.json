@@ -1,0 +1,25 @@
+{
+    "name": "jamesflight/markaround",
+    "require": {
+        "illuminate/container":"4.2.*",
+        "illuminate/support":"4.2.*",
+        "illuminate/filesystem":"4.2.*"
+    },
+    "require-dev": {
+        "codeception/codeception": "2.0.7",
+        "phpspec/phpspec": "2.1.0-RC1",
+        "squizlabs/php_codesniffer": "1.5.5",
+        "phpmd/phpmd": "2.1.3"
+    },
+    "autoload":{
+        "psr-4": {
+            "Jamesflight\\Markaround\\":"src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "James Flight",
+            "email": "jamesflight2006@gmail.com"
+        }
+    ]
+}

@@ -1,0 +1,4 @@
+suites:
+  markaround_suite:
+    namespace: Jamesflight\Markaround
+    psr4_prefix: Jamesflight\Markaround
