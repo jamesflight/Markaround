@@ -70,4 +70,13 @@ class MarkaroundTest extends \Codeception\TestCase\Test
 
         $this->assertEquals('date-query-slug', $result->slug);
     }
+
+    public function test_can_query_by_id()
+    {
+        $result = $this->markaround
+            ->where('id', 5)
+            ->first();
+
+        $this->assertEquals('file-with-id-slug', $result->slug);
+    }
 }

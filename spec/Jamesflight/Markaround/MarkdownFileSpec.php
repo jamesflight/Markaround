@@ -22,7 +22,13 @@ class MarkdownFileSpec extends ObjectBehavior
 
     function it_can_have_a_date()
     {
-        $this->beConstructedWith('a/path/with/2014-11-12_a-slug.md');
+        $this->beConstructedWith('a/path/with/2014-11-12-a-slug.md');
         $this->date->shouldBe("2014-11-12");
+    }
+
+    function it_can_have_an_id()
+    {
+        $this->beConstructedWith('path/to/05_a-slug.md');
+        $this->id->shouldBe(5);
     }
 }
