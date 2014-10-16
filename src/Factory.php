@@ -2,6 +2,8 @@
 
 namespace Jamesflight\Markaround;
 
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 use Jamesflight\Markaround\Operators\Equals;
 use Jamesflight\Markaround\Decorators\Date;
 
@@ -9,8 +11,8 @@ class Factory
 {
     public function create($config)
     {
-        return Markaround::create(
-            $config,
+        $object = new Markaround(
+            new Filesystem(),
             [
                 '=' => new Equals()
             ],
@@ -18,5 +20,9 @@ class Factory
                 'date' => new Date()
             ]
         );
+
+        $object->setConfig($config);
+
+        return $object;
     }
 }

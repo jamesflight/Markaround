@@ -14,16 +14,14 @@ class Markaround
 
     private $collection;
 
-    private $filepaths;
-
     private $operators;
 
     private $decorators;
 
-    public function __construct(Filesystem $filesystem, Collection $collection, $operators, $decorators)
+    public function __construct(Filesystem $filesystem, $operators, $decorators)
     {
         $this->filesystem = $filesystem;
-        $this->collection = $collection;
+        $this->collection = new Collection();
         $this->operators = $operators;
         $this->decorators = $decorators;
     }
@@ -62,31 +60,40 @@ class Markaround
 
     public function first()
     {
-        return $this->collection->first();
+        $collection = $this->collection;
+        $this->resetCollection();
+        return $collection->first();
     }
 
     public function get()
     {
-        return $this->collection;
+        $collection = $this->collection;
+        $this->resetCollection();
+        return $collection;
+    }
+
+    public function in($path)
+    {
+        $this->setCollection($path);
+        return $this;
     }
 
     public function setConfig($config)
     {
         $this->path = $config['default_path'];
-        $this->filepaths = $this->filesystem->files($this->path);
-        $this->setCollection();
+        $this->setCollection($this->path);
     }
 
-    public static function create($config, $operators, $fields)
+    private function resetCollection()
     {
-        $object = new static(new Filesystem(), new Collection(), $operators, $fields);
-        $object->setConfig($config);
-        return $object;
+        $this->setCollection($this->path);
     }
 
-    private function setCollection()
+    private function setCollection($path)
     {
-        foreach ($this->filepaths as $filepath) {
+        $paths = $this->filesystem->files($path);
+        $this->collection = new Collection();
+        foreach ($paths as $filepath) {
             $this->collection->push(new MarkdownFile($filepath));
         }
     }

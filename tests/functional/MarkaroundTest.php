@@ -62,6 +62,22 @@ class MarkaroundTest extends \Codeception\TestCase\Test
         $this->assertEquals('second-article-today', $results[1]->slug);
     }
 
+    public function test_can_query_in_an_alternate_directory()
+    {
+        $result = $this->markaround
+            ->in('tests/stubs/sub_directory')
+            ->first();
+
+        $this->assertEquals('sub-dir-file', $result->slug);
+
+        // Check that performing an 'inDirectory' query doesn't break the next query
+        $result = $this->markaround
+            ->where('slug', 'a-file-called-wanda')
+            ->first();
+
+        $this->assertEquals('a-file-called-wanda', $result->slug);
+    }
+
     public function test_can_use_equals_sign_to_query()
     {
         $result = $this->markaround
@@ -79,4 +95,5 @@ class MarkaroundTest extends \Codeception\TestCase\Test
 
         $this->assertEquals('file-with-id-slug', $result->slug);
     }
+
 }
