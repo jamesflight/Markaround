@@ -1,5 +1,9 @@
 <?php
+use Illuminate\Filesystem\Filesystem;
+use Jamesflight\Markaround\Decorators\Date;
 use Jamesflight\Markaround\Factory;
+use Jamesflight\Markaround\Markaround;
+use Jamesflight\Markaround\Operators\Equals;
 
 class MarkaroundTest extends \Codeception\TestCase\Test
 {
@@ -10,7 +14,19 @@ class MarkaroundTest extends \Codeception\TestCase\Test
 
     protected function _before()
     {
-        $this->markaround = Factory::create([
+        $this->parser = Mockery::mock('Parsedown');
+        $this->markaround = new Markaround(
+            new Filesystem(),
+            [
+                '=' => new Equals()
+            ],
+            [
+                'date' => new Date()
+            ],
+            $this->parser
+        );
+
+        $this->markaround->setConfig([
             'default_path' => 'tests/stubs'
         ]);
     }
@@ -94,6 +110,26 @@ class MarkaroundTest extends \Codeception\TestCase\Test
             ->first();
 
         $this->assertEquals('file-with-id-slug', $result->slug);
+    }
+
+    public function test_query_returns_object_with_html()
+    {
+        $this->parser
+            ->shouldReceive('text')
+            ->once()
+            ->with('Content')
+            ->andReturn('Parsed Content');
+
+        $result = $this->markaround
+            ->where('slug', 'a-file-called-wanda')
+            ->first();
+
+        $this->assertEquals('Parsed Content', $result->html);
+    }
+
+    public function test_query_returns_object_with_custom_fields()
+    {
+
     }
 
 }

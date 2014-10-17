@@ -3,6 +3,7 @@
 namespace Jamesflight\Markaround;
 
 use DateTime;
+use Illuminate\Filesystem\Filesystem;
 
 class MarkdownFile
 {
@@ -14,14 +15,40 @@ class MarkdownFile
 
     public $id;
 
-    public function __construct($path)
+    private $parser;
+
+    private $filesystem;
+
+    private $fileHasBeenParsed = false;
+
+    private $parsedHtml;
+
+    public function __construct($parser, Filesystem $filesystem)
+    {
+        $this->parser = $parser;
+        $this->filesystem = $filesystem;
+    }
+
+    public function setPath($path)
     {
         $this->path = $path;
         $this->basename = basename($path);
         $this->setPropertiesFromPath();
     }
 
-    protected function setPropertiesFromPath()
+    public function getHtml()
+    {
+        $this->parseFileIfNeccessary();
+        return $this->parsedHtml;
+    }
+
+    public function __get($name)
+    {
+        $method = 'get' . ucfirst($name);
+        return $this->$method();
+    }
+
+    private function setPropertiesFromPath()
     {
         $fullSlug = $this->getBasenameWithoutExtension();
         // If there is an id in the path, set it on the object
@@ -42,18 +69,32 @@ class MarkdownFile
         }
     }
 
-    protected function getBasenameWithoutExtension()
+    private function parseFile()
+    {
+        $fileContents = $this->filesystem->get($this->path);
+        $this->parsedHtml = $this->parser->text($fileContents);
+    }
+
+    private function getBasenameWithoutExtension()
     {
         return explode(".", $this->basename)[0];
     }
 
-    protected function isADate($potentialDate)
+    private function isADate($potentialDate)
     {
         return DateTime::createFromFormat('Y-m-d', $potentialDate) ? true : false;
     }
 
-    protected function stringContains($needle, $haystack)
+    private function stringContains($needle, $haystack)
     {
         return strpos($haystack, $needle) ? true : false;
+    }
+
+    private function parseFileIfNeccessary()
+    {
+        if (!$this->fileHasBeenParsed) {
+            $this->parseFile();
+            $this->fileHasBeenParsed = true;
+        }
     }
 }

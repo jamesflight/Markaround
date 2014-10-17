@@ -18,12 +18,15 @@ class Markaround
 
     private $decorators;
 
-    public function __construct(Filesystem $filesystem, $operators, $decorators)
+    private $parser;
+
+    public function __construct(Filesystem $filesystem, $operators, $decorators, $parser)
     {
         $this->filesystem = $filesystem;
         $this->collection = new Collection();
         $this->operators = $operators;
         $this->decorators = $decorators;
+        $this->parser = $parser;
     }
 
     public function where()
@@ -94,7 +97,9 @@ class Markaround
         $paths = $this->filesystem->files($path);
         $this->collection = new Collection();
         foreach ($paths as $filepath) {
-            $this->collection->push(new MarkdownFile($filepath));
+            $file = new MarkdownFile($this->parser, new Filesystem());
+            $file->setPath($filepath);
+            $this->collection->push($file);
         }
     }
 }
