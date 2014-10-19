@@ -72,9 +72,10 @@ class MarkdownFile
 
     private function setPropertiesFromPath()
     {
-        $fullSlug = $this->getBasenameWithoutExtension();
+        $fullSlug = Util::getBasenameWithoutExtension($this->basename);
+        
         // If there is an id in the path, set it on the object
-        if ($this->stringContains('_', $fullSlug)) {
+        if (Util::stringContains('_', $fullSlug)) {
             $idExplodedSlug =  explode('_', $fullSlug);
             $this->id = (integer) $idExplodedSlug[0];
             $fullSlug = $idExplodedSlug[1];
@@ -82,7 +83,7 @@ class MarkdownFile
 
         $potentialDate = substr($fullSlug, 0, 10);
         // If there is an date in the path, set it on the object, and set the remaining string as the slug
-        if ($this->isADate($potentialDate)) {
+        if (Util::isADate($potentialDate)) {
             $this->date = substr($fullSlug, 0, 10);
             $this->slug = substr($fullSlug, 11);
         } else {
@@ -123,20 +124,6 @@ class MarkdownFile
         $this->parsedHtml = $this->markdownParser->text($this->markdown);
     }
 
-    private function getBasenameWithoutExtension()
-    {
-        return explode(".", $this->basename)[0];
-    }
-
-    private function isADate($potentialDate)
-    {
-        return DateTime::createFromFormat('Y-m-d', $potentialDate) ? true : false;
-    }
-
-    private function stringContains($needle, $haystack)
-    {
-        return strpos($haystack, $needle) ? true : false;
-    }
 
     private function parseFileIfNeccessary()
     {
