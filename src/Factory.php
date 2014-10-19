@@ -12,7 +12,6 @@ class Factory
     public function create($config)
     {
         $object = new Markaround(
-            new Filesystem(),
             [
                 '=' => new Equals()
             ],

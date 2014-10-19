@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Filesystem\Filesystem;
+use Jamesflight\Markaround\ComparisonProcessor;
 use Jamesflight\Markaround\Decorators\Date;
 use Jamesflight\Markaround\Factory;
 use Jamesflight\Markaround\Markaround;
@@ -16,13 +17,14 @@ class MarkaroundTest extends \Codeception\TestCase\Test
     {
         $this->parser = Mockery::mock('Parsedown');
         $this->markaround = new Markaround(
-            new Filesystem(),
-            [
-                '=' => new Equals()
-            ],
-            [
-                'date' => new Date()
-            ],
+            new ComparisonProcessor(
+                [
+                    '=' => new Equals()
+                ],
+                [
+                    'date' => new Date()
+                ]
+            ),
             $this->parser
         );
 
@@ -129,7 +131,18 @@ class MarkaroundTest extends \Codeception\TestCase\Test
 
     public function test_query_returns_object_with_custom_fields()
     {
+        $this->parser
+            ->shouldReceive('text')
+            ->once()
+            ->with('Content')
+            ->andReturn('Parsed Content');
 
+        $result = $this->markaround
+            ->where('slug', 'file-with-custom-fields')
+            ->first();
+
+        $this->assertEquals('foo', $result->foofield);
+        $this->assertEquals('bar', $result->barfield);
     }
 
 }

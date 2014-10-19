@@ -5,6 +5,7 @@ namespace spec\Jamesflight\Markaround;
 use Illuminate\Filesystem\Filesystem;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\Yaml\Yaml;
 
 class MarkdownFileSpec extends ObjectBehavior
 {
@@ -52,6 +53,19 @@ class MarkdownFileSpec extends ObjectBehavior
             ->willReturn('Parsed Markdown');
 
         $this->getHtml()->shouldBe('Parsed Markdown');
+    }
+
+    function it_can_have_custom_fields(Filesystem $filesystem)
+    {
+        $this->setPath('path/to/file.md');
+
+        $filesystem
+            ->get('path/to/file.md')
+            ->shouldBeCalled()
+            ->willReturn("---\r\nfoofield: foo\r\nbarfield: bar\r\n---\r\nContent'");
+
+        $this->getCustomField('foofield')->shouldBe('foo');
+        $this->getCustomField('barfield')->shouldBe('bar');
     }
 
 }

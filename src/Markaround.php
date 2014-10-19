@@ -5,6 +5,8 @@ namespace Jamesflight\Markaround;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use DateTime;
+use Parsedown;
+use Symfony\Component\Yaml\Yaml;
 
 class Markaround
 {
@@ -14,46 +16,38 @@ class Markaround
 
     private $collection;
 
-    private $operators;
+    private $markdownParser;
 
-    private $decorators;
+    private $comparisonProcessor;
 
-    private $parser;
-
-    public function __construct(Filesystem $filesystem, $operators, $decorators, $parser)
+    public function __construct(ComparisonProcessor $comparisonProcessor, $markdownParser = null)
     {
-        $this->filesystem = $filesystem;
+        $this->markdownParser = $markdownParser ?: new Parsedown();
         $this->collection = new Collection();
-        $this->operators = $operators;
-        $this->decorators = $decorators;
-        $this->parser = $parser;
+        $this->filesystem = new Filesystem();
+        $this->comparisonProcessor = $comparisonProcessor;
     }
 
     public function where()
     {
         $field = func_get_arg(0);
 
-        if (array_key_exists(func_get_arg(1), $this->operators)) {
+        if (count(func_get_args()) === 3) {
             $value = func_get_arg(2);
-            $operator = $this->operators[func_get_arg(1)];
-        } else {
+            $operator = func_get_arg(1);
+        } elseif (count(func_get_args()) === 2) {
             $value = func_get_arg(1);
-            $operator = $this->operators[key($this->operators)];
+            $operator = null;
+        } else {
+            throw new Exception('Incorrect number of arguments.');
         }
 
         $newCollection = new Collection();
 
         foreach ($this->collection as $file) {
-            if (array_key_exists($field, $this->decorators)) {
-                if ($this->decorators[$field]->compare($file, $value, $operator)) {
-                    $newCollection->push($file);
-                }
-            } else {
-                if ($operator->compare($file->$field, $value)) {
-                    $newCollection->push($file);
-                }
+            if ($this->comparisonProcessor->compare($file, $field, $value, $operator)) {
+                $newCollection->push($file);
             }
-
         }
 
         $this->collection = $newCollection;
@@ -97,7 +91,7 @@ class Markaround
         $paths = $this->filesystem->files($path);
         $this->collection = new Collection();
         foreach ($paths as $filepath) {
-            $file = new MarkdownFile($this->parser, new Filesystem());
+            $file = new MarkdownFile($this->markdownParser, $this->filesystem);
             $file->setPath($filepath);
             $this->collection->push($file);
         }
