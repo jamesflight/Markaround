@@ -11,13 +11,15 @@ class Factory
 {
     public function create($config)
     {
-        $object = new Markaround(
-            [
-                '=' => new Equals()
-            ],
-            [
-                'date' => new Date()
-            ]
+        $this->markaround = new Markaround(
+            new ComparisonProcessor(
+                [
+                    '=' => new Equals()
+                ],
+                [
+                    'date' => new Date()
+                ]
+            )
         );
 
         $object->setConfig($config);

@@ -73,7 +73,7 @@ class MarkdownFile
     private function setPropertiesFromPath()
     {
         $fullSlug = Util::getBasenameWithoutExtension($this->basename);
-        
+
         // If there is an id in the path, set it on the object
         if (Util::stringContains('_', $fullSlug)) {
             $idExplodedSlug =  explode('_', $fullSlug);
