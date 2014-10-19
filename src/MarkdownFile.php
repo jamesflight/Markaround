@@ -6,38 +6,85 @@ use DateTime;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class MarkdownFile
+ * @package Jamesflight\Markaround
+ */
 class MarkdownFile
 {
+    /**
+     * @var
+     */
     public $slug;
 
+    /**
+     * @var
+     */
     public $date;
 
+    /**
+     * @var
+     */
     public $basename;
 
+    /**
+     * @var
+     */
     public $id;
 
+    /**
+     * @var
+     */
     private $markdownParser;
 
+    /**
+     * @var Filesystem
+     */
     private $filesystem;
 
+    /**
+     * @var bool
+     */
     private $fileHasBeenParsed = false;
 
+    /**
+     * @var bool
+     */
     private $htmlHasBeenParsed = false;
 
+    /**
+     * @var
+     */
     private $parsedHtml;
 
+    /**
+     * @var
+     */
     private $markdown;
 
+    /**
+     * @var
+     */
     private $customFields;
 
+    /**
+     * @var
+     */
     private $yaml;
 
+    /**
+     * @param $markdownParser
+     * @param Filesystem $filesystem
+     */
     public function __construct($markdownParser, Filesystem $filesystem)
     {
         $this->markdownParser = $markdownParser;
         $this->filesystem = $filesystem;
     }
 
+    /**
+     * @param $path
+     */
     public function setPath($path)
     {
         $this->path = $path;
@@ -45,6 +92,9 @@ class MarkdownFile
         $this->setPropertiesFromPath();
     }
 
+    /**
+     * @return mixed
+     */
     public function getHtml()
     {
         $this->parseFileIfNeccessary();
@@ -52,6 +102,10 @@ class MarkdownFile
         return $this->parsedHtml;
     }
 
+    /**
+     * @param $field
+     * @return mixed
+     */
     public function getCustomField($field)
     {
         $this->parseFileIfNeccessary();
@@ -60,6 +114,10 @@ class MarkdownFile
         }
     }
 
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function __get($name)
     {
         if (in_array($name, ['html'])) {
@@ -70,9 +128,12 @@ class MarkdownFile
         }
     }
 
+    /**
+     *
+     */
     private function setPropertiesFromPath()
     {
-        $fullSlug = Util::getBasenameWithoutExtension($this->basename);
+        $fullSlug = Util::removeExtensionFromFilename($this->basename);
 
         // If there is an id in the path, set it on the object
         if (Util::stringContains('_', $fullSlug)) {
@@ -92,6 +153,9 @@ class MarkdownFile
         }
     }
 
+    /**
+     * @throws \Illuminate\Filesystem\FileNotFoundException
+     */
     private function parseFile()
     {
         $fileContents = $this->filesystem->get($this->path);
@@ -107,6 +171,9 @@ class MarkdownFile
         $this->parseYaml();
     }
 
+    /**
+     *
+     */
     private function parseYaml()
     {
 
@@ -119,12 +186,18 @@ class MarkdownFile
         }
     }
 
+    /**
+     *
+     */
     private function parseHtml()
     {
         $this->parsedHtml = $this->markdownParser->text($this->markdown);
     }
 
 
+    /**
+     *
+     */
     private function parseFileIfNeccessary()
     {
         if (!$this->fileHasBeenParsed) {
@@ -133,6 +206,9 @@ class MarkdownFile
         }
     }
 
+    /**
+     *
+     */
     private function parseHtmlIfNeccessary()
     {
         if (!$this->htmlHasBeenParsed) {
