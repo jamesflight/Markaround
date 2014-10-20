@@ -58,18 +58,8 @@ class Markaround
     public function where()
     {
         $args = func_get_args();
-        $argNumber = count($args);
-        $field = $args[0];
 
-        if ($argNumber === 3) {
-            $value = $args[2];
-            $operator = $args[1];
-        } elseif ($argNumber === 2) {
-            $value = $args[1];
-            $operator = null;
-        } else {
-            throw new \BadMethodCallException("Expected 2 or 3 arguments, got $argNumber");
-        }
+        list($field, $value, $operator) = $this->getWhereVars($args);
 
         $newCollection = new Collection();
 
@@ -185,5 +175,30 @@ class Markaround
             $file->setPath($filepath);
             $this->collection->push($file);
         }
+    }
+
+    /**
+     * @param $args
+     * @return array
+     */
+    private function getWhereVars($args)
+    {
+        $argNumber = count($args);
+        $field = $args[0];
+
+        switch ($argNumber) {
+            case 3:
+                $value = $args[2];
+                $operator = $args[1];
+                break;
+            case 2:
+                $value = $args[1];
+                $operator = null;
+                break;
+            default:
+                throw new \BadMethodCallException("Expected 2 or 3 arguments, got $argNumber");
+                break;
+        }
+        return array($field, $value, $operator);
     }
 }
