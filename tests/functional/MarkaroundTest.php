@@ -210,4 +210,31 @@ class MarkaroundTest extends \Codeception\TestCase\Test
         $this->assertEquals('file-with-id-4', $result->slug);
     }
 
+    function test_find_or_fail_can_find_file()
+    {
+        $result = $this->markaround
+            ->findOrFail(4);
+
+        $this->assertEquals('file-with-id-4', $result->slug);
+    }
+
+    /**
+     * @expectedException Jamesflight\Markaround\Exceptions\MarkdownFileNotFoundException
+     */
+    function test_find_or_fail_throws_exception_if_file_does_not_exist()
+    {
+        $result = $this->markaround
+            ->findOrFail(101);
+    }
+
+    /**
+     * @expectedException Jamesflight\Markaround\Exceptions\MarkdownFileNotFoundException
+     */
+    function test_first_or_fails_throws_exception_if_file_doesnt_exists()
+    {
+        $this->markaround
+            ->where('id', '102')
+            ->firstOrFail();
+    }
+
 }

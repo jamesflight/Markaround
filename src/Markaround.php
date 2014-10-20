@@ -5,6 +5,7 @@ namespace Jamesflight\Markaround;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use DateTime;
+use Jamesflight\Markaround\Exceptions\MarkdownFileNotFoundException;
 use Parsedown;
 use Symfony\Component\Yaml\Yaml;
 
@@ -95,6 +96,20 @@ class Markaround
 
     /**
      * @return mixed
+     * @throws MarkdownFileNotFoundException
+     */
+    public function firstOrFail()
+    {
+        $first = $this->collection->first();
+        $this->resetCollection();
+        if (is_object($first)) {
+            return $first;
+        }
+        throw new MarkdownFileNotFoundException('No markdown files were found.');
+    }
+
+    /**
+     * @return mixed
      */
     public function get()
     {
@@ -113,9 +128,32 @@ class Markaround
         return $this;
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function find($id)
     {
-        return $this->where('id', $id)->first();
+        $this->resetCollection();
+        $file = $this->where('id', $id)->first();
+        $this->resetCollection();
+        return $file;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws MarkdownFileNotFoundException
+     */
+    public function findOrFail($id)
+    {
+        $this->resetCollection();
+        $file = $this->where('id', $id)->first();
+        $this->resetCollection();
+        if (is_object($file)) {
+            return $file;
+        }
+        throw new MarkdownFileNotFoundException("Markdown file with id $id could not be found.");
     }
 
     /**
