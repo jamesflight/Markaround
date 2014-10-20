@@ -52,20 +52,22 @@ class Markaround
 
     /**
      * @return $this
-     * @throws Exception
+     * @throws \Exception
      */
     public function where()
     {
-        $field = func_get_arg(0);
+        $args = func_get_args();
+        $argNumber = count($args);
+        $field = $args[0];
 
-        if (count(func_get_args()) === 3) {
-            $value = func_get_arg(2);
-            $operator = func_get_arg(1);
-        } elseif (count(func_get_args()) === 2) {
-            $value = func_get_arg(1);
+        if ($argNumber === 3) {
+            $value = $args[2];
+            $operator = $args[1];
+        } elseif ($argNumber === 2) {
+            $value = $args[1];
             $operator = null;
         } else {
-            throw new Exception('Incorrect number of arguments.');
+            throw new \BadMethodCallException("Expected 2 or 3 arguments, got $argNumber");
         }
 
         $newCollection = new Collection();
@@ -109,6 +111,11 @@ class Markaround
     {
         $this->setCollection($path);
         return $this;
+    }
+
+    public function find($id)
+    {
+        return $this->where('id', $id)->first();
     }
 
     /**

@@ -37,8 +37,9 @@ class ComparisonProcessor
      */
     public function compare(MarkdownFile $markdownFile, $field, $value, $operator = null)
     {
+
         if ($operator === null) {
-            $operator = $this->operators[key($this->operators)];
+            $operator = array_values($this->operators)[0];
         } else {
             $operator = $this->operators[$operator];
         }
