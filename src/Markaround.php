@@ -75,6 +75,26 @@ class Markaround
     }
 
     /**
+     * @return $this
+     */
+    public function orWhere()
+    {
+        $args = func_get_args();
+
+        list($field, $value, $operator) = $this->getWhereVars($args);
+
+        $queryCollection = $this->collection;
+
+        $this->setCollection($this->path);
+
+        $this->where($field, $operator, $value);
+
+        $this->collection = $this->collection->merge($queryCollection);
+
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function first()
@@ -147,6 +167,25 @@ class Markaround
     }
 
     /**
+     * @return mixed
+     */
+    public function all()
+    {
+        $this->setCollection($this->path);
+        $all = $this->collection;
+        $this->resetCollection();
+        return $all;
+    }
+
+    public function __call($method, $args)
+    {
+        if (Util::stringBeginsWith($method, 'where')) {
+            $value = $args[0];
+            return $this->whereMagic($method, $value);
+        }
+    }
+
+    /**
      * @param $config
      */
     public function setConfig($config)
@@ -168,13 +207,23 @@ class Markaround
      */
     private function setCollection($path)
     {
+        $this->collection = $this->getFullCollection($path);
+    }
+
+    /**
+     * @param $path
+     * @return Collection
+     */
+    private function getFullCollection($path)
+    {
         $paths = $this->filesystem->files($path);
-        $this->collection = new Collection();
+        $collection = new Collection();
         foreach ($paths as $filepath) {
             $file = new MarkdownFile($this->markdownParser, $this->filesystem);
             $file->setPath($filepath);
-            $this->collection->push($file);
+            $collection->push($file);
         }
+        return $collection;
     }
 
     /**
@@ -200,5 +249,17 @@ class Markaround
                 break;
         }
         return array($field, $value, $operator);
+    }
+
+    /**
+     * @param $method
+     * @param $value
+     * @return $this
+     */
+    private function whereMagic($method, $value)
+    {
+        $property = strtolower(substr($method, 5));
+        $this->where($property, $value);
+        return $this;
     }
 }

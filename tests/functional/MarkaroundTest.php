@@ -122,6 +122,15 @@ class MarkaroundTest extends \Codeception\TestCase\Test
         $this->assertEquals('file-with-id-slug', $result->slug);
     }
 
+    function test_can_query_by_custom_field()
+    {
+        $result = $this->markaround
+            ->where('foofield', 'foo')
+            ->first();
+
+        $this->assertEquals('file-with-custom-fields', $result->slug);
+    }
+
     function test_query_returns_object_with_html()
     {
         $this->parser
@@ -237,4 +246,35 @@ class MarkaroundTest extends \Codeception\TestCase\Test
             ->firstOrFail();
     }
 
+    function test_can_get_all_files()
+    {
+        $results = $this->markaround->all();
+
+        $this->assertEquals(6, $results->count());
+    }
+
+    function test_or_where()
+    {
+        $results = $this->markaround
+            ->where('id', 4)
+            ->orWhere('id', 5)
+            ->get();
+
+        $this->assertEquals(2, $results->count());
+    }
+
+    function test_magic_where()
+    {
+        $result = $this->markaround
+            ->whereId(4)
+            ->first();
+
+        $this->assertEquals('file-with-id-4', $result->slug);
+
+        $result = $this->markaround
+            ->whereFoofield('foo')
+            ->first();
+
+        $this->assertEquals('file-with-custom-fields', $result->slug);
+    }
 }

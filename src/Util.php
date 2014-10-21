@@ -36,4 +36,9 @@ class Util
     {
         return strpos($haystack, $needle) ? true : false;
     }
+
+    public static function stringBeginsWith($string, $match)
+    {
+        return strpos($string, $match) === 0 ? true : false;
+    }
 }
