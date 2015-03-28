@@ -1,8 +1,7 @@
 <?php
-use Illuminate\Filesystem\Filesystem;
+
 use Jamesflight\Markaround\ComparisonProcessor;
 use Jamesflight\Markaround\Decorators\Date;
-use Jamesflight\Markaround\Factory;
 use Jamesflight\Markaround\Markaround;
 use Jamesflight\Markaround\Operators\Equals;
 use Jamesflight\Markaround\Operators\GreaterThan;
