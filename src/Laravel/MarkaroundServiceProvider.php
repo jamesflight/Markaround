@@ -9,10 +9,7 @@ class MarkaroundServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('Jamesflight\Markaround\Markaround', function () {
-            return Factory::create([
-                Config::get('markaround')
-            ]);
+            return Factory::create('../' . Config::get('markaround'));
         });
     }
 }
- 

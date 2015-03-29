@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Facade;
 
 class Markaround extends Facade
 {
-    protected static function getFacadeAccessor() { return 'Jamesflight\Markaround\Markaround'; }
+    protected static function getFacadeAccessor()
+    {
+        return 'Jamesflight\Markaround\Markaround';
+    }
 }
- 
