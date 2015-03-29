@@ -3,6 +3,7 @@ namespace Jamesflight\Markaround\Laravel;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
+use Jamesflight\Markaround\Factory;
 
 class MarkaroundServiceProvider extends ServiceProvider
 {
