@@ -3,6 +3,10 @@ namespace Jamesflight\Markaround;
 
 use Jamesflight\Markaround\Operators\Equals;
 use Jamesflight\Markaround\Decorators\Date;
+use Jamesflight\Markaround\Operators\GreaterThan;
+use Jamesflight\Markaround\Operators\GreaterThanOrEqualTo;
+use Jamesflight\Markaround\Operators\LessThan;
+use Jamesflight\Markaround\Operators\LessThanOrEqualTo;
 
 /**
  * Class Factory
@@ -14,12 +18,16 @@ class Factory
      * @param $config
      * @return mixed
      */
-    public function create($config)
+    public static function create($config)
     {
-        $this->markaround = new Markaround(
+        $markaround = new Markaround(
             new ComparisonProcessor(
                 [
-                    '=' => new Equals()
+                    '=' => new Equals(),
+                    '>' => new GreaterThan(),
+                    '<' => new LessThan(),
+                    '>=' => new GreaterThanOrEqualTo(),
+                    '<=' => new LessThanOrEqualTo()
                 ],
                 [
                     'date' => new Date()
@@ -27,8 +35,8 @@ class Factory
             )
         );
 
-        $object->setConfig($config);
+        $markaround->setConfig($config);
 
-        return $object;
+        return $markaround;
     }
 }
