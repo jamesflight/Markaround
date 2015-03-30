@@ -161,9 +161,14 @@ class MarkdownFile
         $fileContents = $this->filesystem->get($this->path);
 
         if (substr_count($fileContents, '---') >= 2) {
-            $exploded = explode('---', $fileContents);
-            $this->yaml = $exploded[1];
-            $this->markdown = $exploded[2];
+            if(strpos($fileContents, '---') === 0) {
+                $exploded = explode('---', $fileContents);
+                $this->yaml = $exploded[1];
+
+                $secondDividePosition = strpos($fileContents, '---', 3);
+
+                $this->markdown = substr($fileContents, $secondDividePosition + 4);
+            }
         } else {
             $this->markdown = $fileContents;
         }

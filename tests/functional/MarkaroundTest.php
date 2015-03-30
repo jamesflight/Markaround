@@ -40,6 +40,11 @@ class MarkaroundTest extends \Codeception\TestCase\Test
         ]);
     }
 
+    protected function _after()
+    {
+        Mockery::close();
+    }
+
     function test_can_query_by_slug()
     {
         $result = $this->markaround
@@ -147,12 +152,6 @@ class MarkaroundTest extends \Codeception\TestCase\Test
 
     function test_query_returns_object_with_custom_fields()
     {
-        $this->parser
-            ->shouldReceive('text')
-            ->once()
-            ->with('Content')
-            ->andReturn('Parsed Content');
-
         $result = $this->markaround
             ->where('slug', 'file-with-custom-fields')
             ->first();
@@ -249,7 +248,7 @@ class MarkaroundTest extends \Codeception\TestCase\Test
     {
         $results = $this->markaround->all();
 
-        $this->assertEquals(6, $results->count());
+        $this->assertEquals(8, $results->count());
     }
 
     function test_or_where()
@@ -275,5 +274,30 @@ class MarkaroundTest extends \Codeception\TestCase\Test
             ->first();
 
         $this->assertEquals('file-with-custom-fields', $result->slug);
+    }
+
+    function test_extra_dashes()
+    {
+        $this->parser
+            ->shouldReceive('text')
+            ->once()
+            ->with('----------')
+            ->andReturn('Parsed Content');
+
+        $result = $this->markaround
+            ->whereId(6)
+            ->first();
+
+        $this->assertEquals('Parsed Content', $result->html);
+    }
+
+    function test_first_dashes_must_be_on_first_line()
+    {
+
+        $result = $this->markaround
+            ->whereId(7)
+            ->first();
+
+        $this->assertNotEquals('title', $result->title);
     }
 }
