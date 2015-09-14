@@ -161,7 +161,7 @@ class MarkdownFile
         $fileContents = $this->filesystem->get($this->path);
 
         if (substr_count($fileContents, '---') >= 2) {
-            if(strpos($fileContents, '---') === 0) {
+            if (strpos($fileContents, '---') === 0) {
                 $exploded = explode('---', $fileContents);
                 $this->yaml = $exploded[1];
 

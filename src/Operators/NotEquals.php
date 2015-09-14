@@ -1,11 +1,10 @@
 <?php
-
 namespace Jamesflight\Markaround\Operators;
 
-class GreaterThanOrEqualTo implements Operator
+class NotEquals implements Operator
 {
     public function compare($field, $value)
     {
-        return $field >= $value ? true : false;
+        return $field !== $value;
     }
 }

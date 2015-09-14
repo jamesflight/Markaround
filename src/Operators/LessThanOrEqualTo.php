@@ -2,7 +2,7 @@
 
 namespace Jamesflight\Markaround\Operators;
 
-class LessThanOrEqualTo
+class LessThanOrEqualTo implements Operator
 {
     public function compare($field, $value)
     {

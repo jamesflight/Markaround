@@ -2,7 +2,7 @@
 
 namespace Jamesflight\Markaround\Operators;
 
-class GreaterThan
+class GreaterThan implements Operator
 {
     public function compare($field, $value)
     {

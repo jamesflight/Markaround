@@ -45,9 +45,7 @@ class ComparisonProcessor
         }
 
         if (array_key_exists($field, $this->decorators)) {
-            if ($this->decorators[$field]->compare($markdownFile, $value, $operator)) {
-                return true;
-            }
+            return $this->decorators[$field]->compare($markdownFile, $value, $operator);
         }
 
         if ($operator->compare($markdownFile->$field, $value)) {

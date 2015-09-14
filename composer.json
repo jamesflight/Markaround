@@ -3,8 +3,8 @@
     "require": {
         "illuminate/support":">=4.2",
         "illuminate/filesystem":">=4.2",
-        "erusev/parsedown":"1.1.0",
-        "symfony/yaml":"v2.5.5"
+        "erusev/parsedown":"~1.1",
+        "symfony/yaml":"~2.5"
     },
     "require-dev": {
         "codeception/codeception": "2.0.7",

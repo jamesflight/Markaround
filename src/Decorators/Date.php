@@ -8,7 +8,7 @@ use DateTime;
  * Class Date
  * @package Jamesflight\Markaround\Decorators
  */
-class Date
+class Date implements Decorator
 {
     /**
      * @param MarkdownFile $markdownFile
@@ -18,6 +18,10 @@ class Date
      */
     public function compare(MarkdownFile $markdownFile, $value, $operator)
     {
+        if (! $markdownFile->date) {
+            return false;
+        }
+
         $fileDate = $this->getDateAsUnixTimestamp($markdownFile->date);
         $valueDate = $this->getDateAsUnixTimestamp($value);
         return $operator->compare($fileDate, $valueDate);

@@ -6,7 +6,7 @@ namespace Jamesflight\Markaround\Operators;
  * Class Equals
  * @package Jamesflight\Markaround\Operators
  */
-class Equals
+class Equals implements Operator
 {
     /**
      * @param $field

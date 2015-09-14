@@ -8,6 +8,7 @@ use Jamesflight\Markaround\Operators\GreaterThan;
 use Jamesflight\Markaround\Operators\GreaterThanOrEqualTo;
 use Jamesflight\Markaround\Operators\LessThan;
 use Jamesflight\Markaround\Operators\LessThanOrEqualTo;
+use Jamesflight\Markaround\Operators\NotEquals;
 
 class MarkaroundTest extends \Codeception\TestCase\Test
 {
@@ -26,7 +27,8 @@ class MarkaroundTest extends \Codeception\TestCase\Test
                     '>' => new GreaterThan(),
                     '<' => new LessThan(),
                     '>=' => new GreaterThanOrEqualTo(),
-                    '<=' => new LessThanOrEqualTo()
+                    '<=' => new LessThanOrEqualTo(),
+                    '!=' => new NotEquals()
                 ],
                 [
                     'date' => new Date()
@@ -248,7 +250,7 @@ class MarkaroundTest extends \Codeception\TestCase\Test
     {
         $results = $this->markaround->all();
 
-        $this->assertEquals(8, $results->count());
+        $this->assertEquals(9, $results->count());
     }
 
     function test_or_where()
@@ -299,5 +301,43 @@ class MarkaroundTest extends \Codeception\TestCase\Test
             ->first();
 
         $this->assertNotEquals('title', $result->title);
+    }
+
+    function test_can_retieve_by_less_than_date()
+    {
+        $results = $this->markaround
+            ->where('date', '<', '2014-01-01')
+            ->get();
+
+        $this->assertEquals(1, $results->count());
+        $this->assertEquals('older-date-query-slug', $results->first()->slug);
+    }
+
+    function test_can_retieve_by_greater_than_equal_to_date()
+    {
+        $results = $this->markaround
+            ->where('date', '>=', '2012-01-01')
+            ->get();
+
+        $this->assertEquals(3, $results->count());
+    }
+
+    function test_can_retieve_equal_to_date()
+    {
+        $results = $this->markaround
+            ->where('date', '=', '9th October 2013')
+            ->get();
+
+        $this->assertEquals(1, $results->count());
+        $this->assertEquals('older-date-query-slug', $results->first()->slug);
+    }
+
+    function test_not_equal_to_id()
+    {
+        $results = $this->markaround
+            ->where('id', '!=', 4)
+            ->get();
+
+        $this->assertEquals(8, $results->count());
     }
 }

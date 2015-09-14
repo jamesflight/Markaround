@@ -7,6 +7,7 @@ use Jamesflight\Markaround\Operators\GreaterThan;
 use Jamesflight\Markaround\Operators\GreaterThanOrEqualTo;
 use Jamesflight\Markaround\Operators\LessThan;
 use Jamesflight\Markaround\Operators\LessThanOrEqualTo;
+use Jamesflight\Markaround\Operators\NotEquals;
 
 /**
  * Class Factory
@@ -27,7 +28,8 @@ class Factory
                     '>' => new GreaterThan(),
                     '<' => new LessThan(),
                     '>=' => new GreaterThanOrEqualTo(),
-                    '<=' => new LessThanOrEqualTo()
+                    '<=' => new LessThanOrEqualTo(),
+                    '!=' => new NotEquals()
                 ],
                 [
                     'date' => new Date()
