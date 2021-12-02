@@ -6,6 +6,19 @@ Markaround is a PHP library for interacting with directories of Markdown files a
 
 The purpose of this is to make it super easy to create blogs and document readers in PHP with no database, using directories of markdown files instead.
 
+Installation
+============
+
+```
+$ git clone https://github.com/jamesflight/Markaround.git
+$ cd Markaround
+$ composer update
+```
+
+Requirements
+============
+- PHP 7
+
 Bootstrapping
 =============
 Creating a new instance:
