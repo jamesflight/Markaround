@@ -31,6 +31,7 @@ Creating a new instance:
 
     $markaround = Jamesflight\Markaround\Factory::create($config);
 
+
 Usage
 =====
 Saving Markdown files:
