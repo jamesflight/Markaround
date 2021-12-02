@@ -23,7 +23,6 @@ Bootstrapping
 =============
 Creating a new instance:
 
-```php
     <?php
 
     $config = [
@@ -31,7 +30,6 @@ Creating a new instance:
     ];
 
     $markaround = Jamesflight\Markaround\Factory::create($config);
-```
 
 Usage
 =====
